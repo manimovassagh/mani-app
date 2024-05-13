@@ -1,34 +1,30 @@
 package main
 
 import (
-	"log"
-
-	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type Student struct {
-	ID       int    `db:"id"`
-	Name     string `db:"name"`
-	Age      int    `db:"age"`
-	Location string `db:"location"`
+	gorm.Model
+	Name    string
+	IsAdmin bool
 }
 
 func main() {
-	//connect to a PostgreSQL database
-	// Replace the connection details (user, dbname, password, host) with your own
-	db, err := sqlx.Connect("postgres", "user=postgres dbname=mani sslmode=disable password=postgres host=localhost")
-
+	dsn := "host=localhost user=postgres password=postgres dbname=mani port=5432 sslmode=disable "
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatalln(err)
+		panic("failed to connect database")
 	}
+	db.AutoMigrate(&Student{})
 
-	defer db.Close()
+	// Create
+	db.Create(&Student{Name: "Mani", IsAdmin: false})
 
-	// Test the connection to the database
-	if err := db.Ping(); err != nil {
-		log.Fatal(err)
-	} else {
-		log.Println("Successfully Connected")
-	}
+	// Read
+	var student Student
+	db.First(&student, 1) // find product with integer primary key
+
 }
