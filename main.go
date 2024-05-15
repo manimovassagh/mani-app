@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/manimovassagh/mani-app/handlers"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -8,22 +9,6 @@ import (
 )
 
 // User Handlers
-func getUsers(c echo.Context) error {
-	return c.String(http.StatusOK, "Get all users")
-}
-
-func createUser(c echo.Context) error {
-	return c.String(http.StatusOK, "Create a new user")
-}
-
-// Recipe Handlers
-func getRecipes(c echo.Context) error {
-	return c.String(http.StatusOK, "Get all recipes")
-}
-
-func createRecipe(c echo.Context) error {
-	return c.String(http.StatusOK, "Create a new recipe")
-}
 
 func main() {
 	e := echo.New()
@@ -42,12 +27,12 @@ func main() {
 	})
 
 	// User routes
-	e.GET("/users", getUsers)
-	e.POST("/users", createUser)
+	e.GET("/users", handlers.GetUsers)
+	e.POST("/users", handlers.CreateUser)
 
 	// Recipe routes
-	e.GET("/recipes", getRecipes)
-	e.POST("/recipes", createRecipe)
+	e.GET("/recipes", handlers.GetRecipes)
+	e.POST("/recipes", handlers.CreateRecipe)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

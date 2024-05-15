@@ -1,20 +1,23 @@
-package main
+package handlers
 
-import "net/http"
+import (
+	"github.com/labstack/echo/v4"
+	"net/http"
+)
 
-func createRecipe(c echo.Context) error {
+func CreateRecipe(c echo.Context) error {
 	return c.String(http.StatusOK, "Create a new recipe")
 }
 
-func getUsers(c echo.Context) error {
+func GetUsers(c echo.Context) error {
 	return c.String(http.StatusOK, "Get all users")
 }
 
-func createUser(c echo.Context) error {
+func CreateUser(c echo.Context) error {
 	return c.String(http.StatusOK, "Create a new user")
 }
 
-// Recipe Handlers
-func getRecipes(c echo.Context) error {
+// GetRecipes Recipe Handlers
+func GetRecipes(c echo.Context) error {
 	return c.String(http.StatusOK, "Get all recipes")
 }
