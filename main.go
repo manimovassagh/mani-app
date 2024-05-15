@@ -1,30 +1,53 @@
 package main
 
 import (
-	_ "github.com/lib/pq"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"net/http"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
-type Student struct {
-	gorm.Model
-	Name    string
-	IsAdmin bool
+// User Handlers
+func getUsers(c echo.Context) error {
+	return c.String(http.StatusOK, "Get all users")
+}
+
+func createUser(c echo.Context) error {
+	return c.String(http.StatusOK, "Create a new user")
+}
+
+// Recipe Handlers
+func getRecipes(c echo.Context) error {
+	return c.String(http.StatusOK, "Get all recipes")
+}
+
+func createRecipe(c echo.Context) error {
+	return c.String(http.StatusOK, "Create a new recipe")
 }
 
 func main() {
-	dsn := "host=localhost user=postgres password=postgres dbname=mani port=5432 sslmode=disable "
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect database")
-	}
-	db.AutoMigrate(&Student{})
+	e := echo.New()
 
-	// Create
-	db.Create(&Student{Name: "Mani", IsAdmin: false})
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-	// Read
-	var student Student
-	db.First(&student, 1) // find product with integer primary key
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
+	}))
 
+	// Routes
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Welcome to the Recipe Sharing App!")
+	})
+
+	// User routes
+	e.GET("/users", getUsers)
+	e.POST("/users", createUser)
+
+	// Recipe routes
+	e.GET("/recipes", getRecipes)
+	e.POST("/recipes", createRecipe)
+
+	e.Logger.Fatal(e.Start(":8080"))
 }
